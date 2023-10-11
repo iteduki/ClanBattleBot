@@ -14,7 +14,6 @@ jobs:
       && !startsWith(github.head_ref, 'release')
       && !startsWith(github.head_ref, 'doc')
     runs-on: ubuntu-latest
-    working-directory: src
     steps:
       - uses: actions/checkout@v3
         with:
