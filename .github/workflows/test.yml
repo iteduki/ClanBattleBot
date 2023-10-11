@@ -28,4 +28,4 @@ jobs:
       - name: Install packages
         run: npm install
       - name: Run test and show coverage
-        run: npm test -- --bail --maxWorkers=100% --watchAll=false --coverage
+        run: npm test --watchAll=false --coverage
