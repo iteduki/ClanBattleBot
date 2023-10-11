@@ -27,5 +27,5 @@ jobs:
           cache-dependency-path: '**/package-lock.json'
       - name: Install packages
         run: npm install
-      - name: Show coverage
+      - name: Run test and show coverage
         run: npm test -- --bail --maxWorkers=100% --watchAll=false --coverage
