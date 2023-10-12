@@ -20,12 +20,14 @@ jobs:
 
   ci:
     needs: build
+    runs-on: ubuntu-latest
     steps:
       - name: ESLint
         run: npm run lint:eslint
-        
+
   test:
     needs: build
+    runs-on: ubuntu-latest
     steps:
       - name: Run test and show coverage
         run: npm test --watchAll=false --coverage
