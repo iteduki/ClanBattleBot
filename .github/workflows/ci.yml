@@ -13,8 +13,10 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: 20.2
+          node-version-file: '.node-version'
           cache: "npm"
+      - name: node -v
+        run: node -v
       - name: Install Packages
         run: npm ci
       - name: ESLint
@@ -28,7 +30,10 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: 20.2
+          node-version-file: '.node-version'
+          cache: "npm"
+      - name: node -v
+        run: node -v
       - name: Install packages
         run: npm install
       - name: Run test and show coverage
