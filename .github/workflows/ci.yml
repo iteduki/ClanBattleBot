@@ -17,11 +17,17 @@ jobs:
           cache: "npm"
       - name: Install Packages
         run: npm ci
+      # 本来ならここでキャッシュ
 
   ci:
     needs: build
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          cache: "npm"
       - name: ESLint
         run: npm run lint:eslint
 
@@ -29,5 +35,10 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          cache: "npm"
       - name: Run test and show coverage
         run: npm test --watchAll=false --coverage
