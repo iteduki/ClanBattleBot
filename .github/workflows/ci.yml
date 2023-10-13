@@ -65,4 +65,4 @@ jobs:
           ${{ runner.os }}-node-
 
     - name: Run ESLint
-      run: npm run lint
+      run: npm run lint:eslint
