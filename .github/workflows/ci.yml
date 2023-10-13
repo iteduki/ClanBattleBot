@@ -7,34 +7,62 @@ on:
     branches: [develop]
 
 jobs:
-  ci:
+  setup:
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version-file: '.node-version'
-          cache: "npm"
-      - name: node -v
-        run: node -v
-      - name: Install Packages
-        run: npm ci
-      - name: ESLint
-        run: npm run lint:eslint
+    outputs:
+      cache-hit: ${{ steps.cache.outputs.cache-hit }}  # キャッシュヒット情報を次のジョブに渡す
 
-  Test:
-    name: Run test codes
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version-file: '.node-version'
-          cache: "npm"
-      - name: node -v
-        run: node -v
-      - name: Install packages
-        run: npm install
-      - name: Run test and show coverage
-        run: npm test --watchAll=false --coverage
+    - name: Checkout code
+      uses: actions/checkout@v3
+      
+    # キャッシュの設定
+    - id: cache
+      uses: actions/cache@v3
+      with:
+        path: node_modules
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
+          
+    - name: Install Dependencies
+      if: steps.cache.outputs.cache-hit != 'true'  # キャッシュがヒットしなかった場合のみnpm installを実行
+      run: npm install
+
+  test:
+    needs: setup
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Restore node_modules from cache
+      uses: actions/cache@v3
+      with:
+        path: node_modules
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
+
+    - name: Run Jest
+      run: npm test --watchAll=false --coverage
+
+  lint:
+    needs: setup
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Restore node_modules from cache
+      uses: actions/cache@v3
+      with:
+        path: node_modules
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
+
+    - name: Run ESLint
+      run: npm run lint
